@@ -1,0 +1,48 @@
+.dash {
+    display: flex;
+    flex-direction: row; /* allows items to wrap on smaller screens */
+    justify-content: center; /* center content horizontally */
+    gap: 50px; /* spacing between items */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.nimg {
+    width: 100%; /* responsive width */
+    max-width: 900px; /* optional max width */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* center children */
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.linkbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap; /* wrap inner items on smaller screens */
+    justify-content: center; /* center inner content */
+    height: fit-content;
+    width: 100%; /* responsive width */
+    max-width: 750px; /* optional max width */
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 50px; 
+    padding: 0px 20px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Additional media queries for smaller screens */
+@media (max-width: 768px) {
+    .linkbox {
+        padding: 5px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .linkbox {
+        flex-direction: column; /* stack items vertically on very small screens */
+        padding: 5px;
+    }
+}
