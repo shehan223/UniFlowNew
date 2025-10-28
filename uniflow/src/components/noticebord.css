@@ -3,28 +3,29 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px auto;
-  width: 95%;           /* responsive width */
+  margin: 24px auto;
+  width: 95%; /* responsive width */
   max-width: 900px;
-  height: 400px;     /* max width for large screens */
+  height: 400px; /* max width for large screens */
   box-sizing: border-box;
-  padding: 0 10px;      /* some padding on smaller screens */
+  padding: 0 16px;
+  gap: 18px;
 }
 
 /* Individual notice box */
 .notice-box {
   width: 100%;                /* full width of parent */
   aspect-ratio: 16 / 9;       /* maintains proportional height */
-  background: #e6f7ff;
-  border: 2px solid #66b2ff;
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(219, 234, 254, 0.92), rgba(191, 219, 254, 0.86));
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: all 0.3s ease-in-out;
-  margin-bottom: 20px;       /* space between notices */
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
+  transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+  position: relative;
 }
 
 /* Image inside notice box */
@@ -34,6 +35,51 @@
   object-fit: cover;
   transition: opacity 0.5s ease-in-out;
   display: block;
+  opacity: 0;
+}
+
+.notice-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 44px rgba(15, 23, 42, 0.18);
+}
+
+.notice-image--visible {
+  opacity: 1;
+}
+
+.notice-placeholder {
+  position: absolute;
+  inset: 24px;
+  border-radius: 16px;
+  background: rgba(248, 250, 255, 0.85);
+  border: 1px dashed rgba(59, 130, 246, 0.45);
+  color: rgba(37, 64, 116, 0.85);
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem;
+  gap: 0.5rem;
+}
+
+.notice-placeholder--loading {
+  background: rgba(255, 255, 255, 0.6);
+  border-style: solid;
+  border-color: rgba(37, 99, 235, 0.18);
+  color: rgba(37, 64, 116, 0.7);
+}
+
+.notice-placeholder--error span {
+  font-size: 0.75rem;
+  color: rgba(37, 64, 116, 0.6);
+  word-break: break-all;
+}
+
+.notice-box--empty .notice-placeholder {
+  position: static;
+  inset: auto;
 }
 
 /* Responsive tweaks for smaller screens */

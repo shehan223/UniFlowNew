@@ -2,56 +2,72 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #66b2ff; /* light blue background */
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 18px 28px;
+  background: linear-gradient(135deg, #6fb5ff 0%, #3b82f6 100%);
+  border-radius: 0px 0px 15px 15px;
+  border: 1px solid rgba(37, 99, 235, 0.35);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+  backdrop-filter: blur(8px);
+  gap: 1.5rem;
 }
 
-/* Left side logo */
 .navbar-logo .logo {
   height: 45px;
+  width: auto;
+  object-fit: contain;
+  margin-left: 20px;
+  display: block;
 }
 
-/* Right side */
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 24px;
 }
 
 .icon {
-  font-size: 20px;
-  color: #007bff;
+  font-size: 1.25rem;
+  color: var(--brand-primary);
   cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.icon:hover {
+  color: var(--brand-accent);
+  transform: translateY(-2px) scale(1.08);
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 14px;
+  padding: 8px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: var(--shadow-soft);
 }
 
 .user-icon {
-  font-size: 25px;
-  color: #007bff;
+  font-size: 1.65rem;
+  color: var(--brand-primary);
 }
 
 .student-name {
-  font-weight: bold;
-  color: black;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
 }
 
-/* Logout button */
 .logout-btn {
-  background-color: #007bff;
-  color: white;
+  padding: 0.65rem 1.4rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
   border: none;
-  padding: 6px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
+  box-shadow: 0 12px 24px rgba(59, 130, 246, 0.25);
 }
 
 .logout-btn:hover {
-  background-color: #0056b3;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 16px 28px rgba(59, 130, 246, 0.3);
 }
