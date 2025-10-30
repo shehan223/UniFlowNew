@@ -1,45 +1,58 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  background-color: #e6f0fa; /* light background */
-  padding: 20px;
-  width: fit-content;  /* sidebar width */
+  background: linear-gradient(160deg, rgba(226, 240, 255, 0.75), rgba(233, 248, 255, 0.82));
+  padding: 24px;
+  width: fit-content;
   height: fit-content;
-  border-radius: 30px;
-  margin: 20px;
-  
+  border-radius: 28px;
+  margin: 24px 16px;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(10px);
+  gap: 18px;
 }
 
 .sidebar-btn {
   display: flex;
   align-items: center;
-  gap: 5px;
-  background-color: #e6ffff; /* button background */
   border: none;
   outline: none;
-  padding: 10px 30px;
-  margin-bottom: 12px;
-  border-radius: 12px;
-  font-size: 20px;
+  padding: 14px 26px;
+  border-radius: 18px;
+  font-size: 1.05rem;
   font-weight: 500;
-  color: #000;
+  color: var(--text-primary);
   text-align: left;
   cursor: pointer;
-  transition: all 0.3s ease;
-  gap: 20px;
-  width: 300px;;
+  transition: var(--transition-base);
+  gap: 18px;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
 }
 
 .sidebar-btn:hover {
-  background-color: #b3ecff; /* hover effect */
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, rgba(219, 234, 254, 0.95), rgba(191, 219, 254, 0.9));
+  box-shadow: 0 12px 22px rgba(59, 130, 246, 0.18);
 }
 
 .sidebar-btn.active {
-  border: 2px solid #3399ff; /* active state */
-  background-color: #e6ffff;
+  border: 1.5px solid rgba(59, 130, 246, 0.55);
+  background: linear-gradient(135deg, rgba(191, 219, 254, 0.95), rgba(147, 197, 253, 0.9));
+  box-shadow: 0 14px 28px rgba(59, 130, 246, 0.25);
 }
 
 .icon {
-  font-size: 18px;
-  color: #007bff;
+  font-size: 1.3rem;
+  color: var(--brand-primary);
+  transition: var(--transition-base);
+}
+
+.sidebar-btn:hover .icon,
+.sidebar-btn.active .icon {
+  color: var(--brand-accent);
+  transform: scale(1.08);
 }

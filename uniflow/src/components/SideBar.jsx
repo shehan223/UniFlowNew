@@ -1,42 +1,46 @@
-import React from 'react'
-import { FaTachometerAlt, FaQrcode, FaClipboardList, FaUtensils, FaClinicMedical, FaHome } from "react-icons/fa";
-import './sidebar.css'
-import { Link } from 'react-router-dom';
+import React from "react";
+import {
+  FaTachometerAlt,
+  FaQrcode,
+  FaClipboardList,
+  FaUtensils,
+  FaClinicMedical,
+  FaHome,
+} from "react-icons/fa";
+import "./sidebar.css";
+import { Link, useLocation } from "react-router-dom";
 
+const defaultLinks = [
+  { to: "/dashboard", label: "Dashboard", Icon: FaTachometerAlt },
+  { to: "/notices", label: "Notice Board", Icon: FaClipboardList },
+  { to: "/qr", label: "QR Attendance", Icon: FaQrcode },
+  { to: "/canteen", label: "Canteen", Icon: FaUtensils },
+  { to: "/medical", label: "Medical Center", Icon: FaClinicMedical },
+  { to: "/student", label: "Hostel", Icon: FaHome },
+];
 
-function SideBar() {
+function SideBar({ links = defaultLinks, activePath }) {
+  const { pathname } = useLocation();
+  const currentPath = activePath ?? pathname;
+
   return (
     <div className="sidebar">
-      <Link to={'/'} style={{ textDecoration: "none", color: "black" }}>
-      <button className="sidebar-btn">
-        <FaTachometerAlt className="icon" />
-        Dashboard
-      </button>
-      </Link>
-      <Link to={'/qr'} style={{ textDecoration: "none", color: "black" }}>
-      <button className="sidebar-btn">
-        <FaQrcode className="icon" />
-        QR Attendance
-      </button>
-      </Link>
-      <button className="sidebar-btn">
-        <FaClipboardList className="icon" />
-        Notice Board
-      </button>
-      <button className="sidebar-btn">
-        <FaUtensils className="icon" />
-        Canteen
-      </button>
-      <button className="sidebar-btn">
-        <FaClinicMedical className="icon" />
-        Medical Center
-      </button>
-      <button className="sidebar-btn">
-        <FaHome className="icon" />
-        Hostel
-      </button>
+      {links.map(({ to, label, Icon }) => (
+        <Link
+          key={to}
+          to={to}
+          style={{ textDecoration: "none", color: "black" }}
+        >
+          <button
+            className={`sidebar-btn${currentPath === to ? " active" : ""}`}
+          >
+            <Icon className="icon" />
+            {label}
+          </button>
+        </Link>
+      ))}
     </div>
-  )
+  );
 }
 
-export default SideBar
+export default SideBar;

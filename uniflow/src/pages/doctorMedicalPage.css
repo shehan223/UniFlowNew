@@ -1,0 +1,214 @@
+.doctor-medical {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, #eef2ff 0%, #fdf2f8 45%, #e0f2fe 100%);
+  box-sizing: border-box;
+}
+
+.doctor-medical__card {
+  width: min(540px, 100%);
+  padding: 3.2rem 3.6rem;
+  border-radius: 26px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(228, 233, 255, 0.66));
+  box-shadow: 0 32px 90px rgba(30, 64, 175, 0.22), 0 0 0 1px rgba(129, 140, 248, 0.18);
+  border: 1.3px solid rgba(99, 102, 241, 0.28);
+  backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  align-items: stretch;
+  transition: var(--transition-base);
+}
+
+.doctor-medical__label {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-align: left;
+  padding-left: 0.75rem;
+}
+
+.doctor-medical__body {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doctor-toggle {
+  width: 240px;
+  height: 92px;
+  border-radius: 999px;
+  border: none;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.35s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  position: relative;
+  overflow: hidden;
+  padding: 0 24px;
+  isolation: isolate;
+}
+
+.doctor-toggle__label-wrapper {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.doctor-toggle__label {
+  display: block;
+  width: 100%;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.08em;
+  transition: color 0.35s ease;
+  font-weight: 700;
+}
+
+.doctor-toggle__knob {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  width: 76px;
+  height: 76px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(226, 232, 240, 0.85));
+  box-shadow: 0 12px 25px rgba(15, 23, 42, 0.22),
+    inset 0 0 0 1px rgba(148, 163, 184, 0.35),
+    inset 0 -8px 14px rgba(148, 163, 184, 0.25);
+  transition: left 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+  z-index: 2;
+}
+
+.doctor-toggle__knob::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(226, 232, 240, 0.7));
+  box-shadow: inset 0 6px 12px rgba(148, 163, 184, 0.18);
+}
+
+.doctor-toggle__knob--on {
+  left: calc(100% - 86px);
+  box-shadow: 0 12px 28px rgba(15, 118, 110, 0.24),
+    inset 0 0 0 1px rgba(34, 197, 94, 0.35),
+    inset 0 -8px 16px rgba(56, 189, 248, 0.18);
+  transform: scale(1.02);
+}
+
+.doctor-toggle--on .doctor-toggle__label-wrapper {
+  justify-content: flex-start;
+}
+
+.doctor-toggle--on .doctor-toggle__label {
+  text-align: left;
+  padding-right: 120px;
+  padding-left: 0;
+}
+
+.doctor-toggle--off .doctor-toggle__label-wrapper {
+  justify-content: flex-end;
+}
+
+.doctor-toggle--off .doctor-toggle__label {
+  text-align: right;
+  padding-left: 120px;
+  padding-right: 0;
+}
+
+.doctor-toggle__glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 30% 50%, rgba(248, 113, 113, 0.45), transparent 70%);
+  opacity: 0.3;
+  z-index: 1;
+  transition: background 0.35s ease, opacity 0.35s ease;
+}
+
+.doctor-toggle__glow--on {
+  background: radial-gradient(circle at 70% 50%, rgba(134, 239, 172, 0.55), transparent 70%);
+  opacity: 0.55;
+  animation: doctorTogglePulse 2s ease-in-out infinite;
+}
+
+.doctor-toggle--on {
+  background: linear-gradient(135deg, #22c55e, #0ea5e9);
+  box-shadow: 0 26px 65px rgba(34, 197, 94, 0.35);
+  transform: translateY(-2px);
+}
+
+.doctor-toggle--off {
+  box-shadow: 0 22px 55px rgba(239, 68, 68, 0.32);
+}
+
+.doctor-toggle:active {
+  transform: translateY(0);
+}
+
+.doctor-toggle:focus-visible {
+  outline: 3px solid rgba(56, 189, 248, 0.4);
+  outline-offset: 4px;
+}
+
+@keyframes doctorTogglePulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.03);
+  }
+}
+
+@media (max-width: 640px) {
+  .doctor-medical__card {
+    padding: 2.6rem 2.4rem;
+    gap: 2.2rem;
+  }
+
+  .doctor-medical__label {
+    font-size: 1.2rem;
+    padding-left: 0.5rem;
+  }
+
+  .doctor-toggle {
+    width: 210px;
+    height: 80px;
+    font-size: 1.25rem;
+    padding: 0 20px;
+  }
+
+  .doctor-toggle__knob {
+    width: 68px;
+    height: 68px;
+  }
+
+  .doctor-toggle__knob--on {
+    left: calc(100% - 78px);
+  }
+
+  .doctor-toggle--on .doctor-toggle__label {
+    padding-right: 100px;
+  }
+
+  .doctor-toggle--off .doctor-toggle__label {
+    padding-left: 100px;
+  }
+}
