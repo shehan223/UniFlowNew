@@ -4,8 +4,9 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, googleProvider } from "../firebase";
 import UniflowLogo from "../assets/uniflow-logo.png";
 import "./auth.css";
 
@@ -100,31 +101,7 @@ function AuthCard({ onAuthSuccess }) {
         { replace: true },
       );
     } catch (error) {
-      localStorage.removeItem("isAuthenticated");
-      localStorage.removeItem("email");
-      localStorage.removeItem("role");
-      localStorage.removeItem("userRole");
-      localStorage.removeItem("userFullName");
-      localStorage.removeItem("userProfilePhoto");
-      localStorage.removeItem("userPhone");
-      localStorage.removeItem("userAddress");
-      localStorage.removeItem("userYear");
-      localStorage.removeItem("userID");
-      localStorage.removeItem("userDepartment");
-      localStorage.removeItem("userRoleDescription");
-      localStorage.removeItem("wardenEmployeeId");
-      localStorage.removeItem("wardDept");
-      localStorage.removeItem("wardExt");
-      localStorage.removeItem("wardPhone");
-      localStorage.removeItem("wardAdminId");
-      localStorage.removeItem("wardEmail");
-      localStorage.removeItem("docRegNo");
-      localStorage.removeItem("docSpec");
-      localStorage.removeItem("docHours");
-      localStorage.removeItem("docPhone");
-      localStorage.removeItem("docAdminId");
-      localStorage.removeItem("docEmail");
-      localStorage.removeItem("userPassword");
+      localStorage.clear();
       setFeedback("Invalid email or password. Please try again.");
     } finally {
       setSubmitting(false);
@@ -156,6 +133,33 @@ function AuthCard({ onAuthSuccess }) {
     }
   };
 
+  // 👉 Handle Google Sign-In
+  const handleGoogleSignIn = async () => {
+    setSubmitting(true);
+    setFeedback("");
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      const displayName = user.displayName || "";
+      const email = user.email || "";
+
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("email", email);
+      localStorage.setItem("userFullName", displayName);
+      localStorage.setItem("userRole", "student");
+      localStorage.setItem("role", "student");
+
+      setFeedback("Google sign-in successful!");
+      onAuthSuccess?.("student");
+      navigate("/dashboard", { replace: true });
+    } catch (error) {
+      setFeedback(error.message || "Google sign-in failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className={`auth-card auth-card--login slide-fade ${mode}`}>
       <div className="auth-card__brand">
@@ -165,11 +169,7 @@ function AuthCard({ onAuthSuccess }) {
       <p className="auth-card__subtitle">{copy.subtitle}</p>
 
       {mode === "login" ? (
-        <form
-          key="login"
-          className="auth-card__form slide-fade"
-          onSubmit={handleLoginSubmit}
-        >
+        <form key="login" className="auth-card__form slide-fade" onSubmit={handleLoginSubmit}>
           <label className="auth-card__field">
             <span>Email</span>
             <input
@@ -197,13 +197,38 @@ function AuthCard({ onAuthSuccess }) {
           <button className="auth-card__submit" type="submit" disabled={submitting}>
             {submitting ? "Logging in..." : copy.actionText}
           </button>
+
+          {/* Google Sign-In Section */}
+          <p className="auth-card__toggle">
+            {copy.togglePrompt}{" "}
+            <span
+              onClick={handleToggle}
+              onKeyDown={handleToggleKey}
+              role="button"
+              tabIndex={0}
+            >
+              {copy.toggleLabel}
+            </span>
+          </p>
+          <hr />
+          <div className="google-signin">
+            <button
+              type="button"
+              className="auth-card__google"
+              onClick={handleGoogleSignIn}
+              disabled={submitting}
+            >
+              <img
+                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                alt="Google logo"
+                className="google-icon"
+              />
+              Sign up with Google
+            </button>
+          </div>
         </form>
       ) : (
-        <form
-          key="signup"
-          className="auth-card__form slide-fade"
-          onSubmit={handleSignupSubmit}
-        >
+        <form key="signup" className="auth-card__form slide-fade" onSubmit={handleSignupSubmit}>
           <label className="auth-card__field">
             <span>Full Name</span>
             <input
@@ -243,22 +268,22 @@ function AuthCard({ onAuthSuccess }) {
           <button className="auth-card__submit" type="submit" disabled={submitting}>
             {submitting ? "Creating account..." : copy.actionText}
           </button>
+
+          <p className="auth-card__toggle">
+            {copy.togglePrompt}{" "}
+            <span
+              onClick={handleToggle}
+              onKeyDown={handleToggleKey}
+              role="button"
+              tabIndex={0}
+            >
+              {copy.toggleLabel}
+            </span>
+          </p>
         </form>
       )}
 
       {feedback && <p className="auth-card__feedback">{feedback}</p>}
-
-      <p className="auth-card__toggle">
-        {copy.togglePrompt}{" "}
-        <span
-          onClick={handleToggle}
-          onKeyDown={handleToggleKey}
-          role="button"
-          tabIndex={0}
-        >
-          {copy.toggleLabel}
-        </span>
-      </p>
     </div>
   );
 }
