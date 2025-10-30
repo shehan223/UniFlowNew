@@ -1,0 +1,49 @@
+.profile-chip {
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(233, 242, 255, 0.8));
+  border: 1px solid rgba(0, 78, 179, 0.18);
+  box-shadow: 0 6px 16px rgba(0, 72, 170, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.profile-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 72, 170, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.profile-chip:focus-visible {
+  box-shadow: 0 0 0 3px rgba(56, 118, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.profile-chip img,
+.profile-chip__emoji {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background: rgba(8, 58, 122, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-chip__emoji {
+  font-size: 18px;
+}
+
+.profile-chip span {
+  color: #083a7a;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
