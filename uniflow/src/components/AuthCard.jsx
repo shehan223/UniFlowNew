@@ -78,14 +78,20 @@ function AuthCard({ onAuthSuccess }) {
     const isDoctor = email === DOCTOR_EMAIL && password === DOCTOR_PASSWORD;
 
     try {
+      let fullName = "";
       if (!isWarden && !isDoctor) {
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        fullName = userCredential.user?.displayName?.trim() || "";
       }
-
       const role = isWarden ? "warden" : isDoctor ? "doctor" : "student";
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("email", email);
       localStorage.setItem("role", role);
+      localStorage.setItem("userRole", role);
+      localStorage.setItem("userPassword", password);
+      if (fullName) {
+        localStorage.setItem("userFullName", fullName);
+      }
       setFeedback("Login successful!");
       onAuthSuccess?.(role);
 
@@ -97,6 +103,28 @@ function AuthCard({ onAuthSuccess }) {
       localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("email");
       localStorage.removeItem("role");
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("userFullName");
+      localStorage.removeItem("userProfilePhoto");
+      localStorage.removeItem("userPhone");
+      localStorage.removeItem("userAddress");
+      localStorage.removeItem("userYear");
+      localStorage.removeItem("userID");
+      localStorage.removeItem("userDepartment");
+      localStorage.removeItem("userRoleDescription");
+      localStorage.removeItem("wardenEmployeeId");
+      localStorage.removeItem("wardDept");
+      localStorage.removeItem("wardExt");
+      localStorage.removeItem("wardPhone");
+      localStorage.removeItem("wardAdminId");
+      localStorage.removeItem("wardEmail");
+      localStorage.removeItem("docRegNo");
+      localStorage.removeItem("docSpec");
+      localStorage.removeItem("docHours");
+      localStorage.removeItem("docPhone");
+      localStorage.removeItem("docAdminId");
+      localStorage.removeItem("docEmail");
+      localStorage.removeItem("userPassword");
       setFeedback("Invalid email or password. Please try again.");
     } finally {
       setSubmitting(false);
@@ -111,8 +139,12 @@ function AuthCard({ onAuthSuccess }) {
     const { name, email, password } = signupValues;
 
     try {
+      const trimmedName = name.trim();
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(userCredential.user, { displayName: name.trim() });
+      await updateProfile(userCredential.user, { displayName: trimmedName });
+      localStorage.setItem("userFullName", trimmedName);
+      localStorage.setItem("userPassword", password);
+      localStorage.setItem("userRole", "student");
       setFeedback("Signup successful! You can now login.");
       setSignupValues(defaultSignup);
       setMode("login");
