@@ -4,11 +4,14 @@ import AuthCard from './components/AuthCard';
 import DashBord from './pages/DashBord';
 import DoctorMedicalPage from './pages/DoctorMedicalPage';
 import HostelNoticePage from './pages/HostelNoticePage';
+import NoticePage from './pages/NoticePage';
+import Canteen from './pages/Canteen';
+import Medical from './pages/Medical';
 import Qr from './pages/Qr';
 import StudentHostelView from './pages/StudentHostelView';
-import AdminCanteen from './pages/canteen/AdminCanteen';
-import StudentCanteen from './pages/canteen/StudentCanteen';
-import PrivateCanteenAdminRoute from './routes/PrivateCanteenAdminRoute';
+import Hostal from './admins/Hostal';
+import AdminCanteen from './admins/Canteen';
+import AdminMedical from './admins/Medical';
 
 const getStoredValue = (key) => {
   if (typeof window === 'undefined') {
@@ -30,8 +33,14 @@ const getDefaultRoute = (role) => {
   if (role === 'doctor') {
     return '/doctor';
   }
-  if (role === 'canteenAdmin') {
+  if (role === 'hostal') {
+    return '/hostal';
+  }
+  if (role === 'canteen') {
     return '/canteen-admin';
+  }
+  if (role === 'medical-admin') {
+    return '/medical-admin';
   }
   return '/dashboard';
 };
@@ -69,72 +78,79 @@ function App() {
 
   const defaultRoute = getDefaultRoute(role);
 
-  const requireAuth = (element) => (auth ? element : <Navigate to="/login" replace />);
+  if (!auth) {
+    return (
+      <Routes>
+        <Route
+          path="/login"
+          element={<AuthCard onAuthSuccess={handleLoginSuccess} />}
+        />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    );
+  }
 
   return (
     <Routes>
       <Route
         path="/login"
-        element={
-          auth ? (
-            <Navigate to={defaultRoute} replace />
-          ) : (
-            <AuthCard onAuthSuccess={handleLoginSuccess} />
-          )
-        }
+        element={<Navigate to={defaultRoute} replace />}
       />
-      <Route
-        path="/"
-        element={
-          auth ? (
-            <Navigate to={defaultRoute} replace />
-          ) : (
-            <Navigate to="/canteen" replace />
-          )
-        }
-      />
-      <Route path="/dashboard" element={requireAuth(<DashBord />)} />
-      <Route path="/student" element={requireAuth(<StudentHostelView />)} />
-      <Route path="/canteen" element={<StudentCanteen />} />
-      <Route
-        path="/canteen-admin"
-        element={
-          <PrivateCanteenAdminRoute>
-            <AdminCanteen />
-          </PrivateCanteenAdminRoute>
-        }
-      />
-      <Route path="/notices" element={requireAuth(<HostelNoticePage />)} />
+      <Route path="/" element={<Navigate to={defaultRoute} replace />} />
+      <Route path="/dashboard" element={<DashBord />} />
+      <Route path="/notice" element={<NoticePage />} />
+      <Route path="/canteen" element={<Canteen />} />
+      <Route path="/medical" element={<Medical />} />
+      <Route path="/student" element={<StudentHostelView />} />
+      <Route path="/notices" element={<HostelNoticePage />} />
       <Route
         path="/warden"
         element={
-          auth ? (
-            role === 'warden' ? (
-              <HostelNoticePage />
-            ) : (
-              <Navigate to={defaultRoute} replace />
-            )
+          role === 'warden' ? (
+            <HostelNoticePage />
           ) : (
-            <Navigate to="/login" replace />
+            <Navigate to={defaultRoute} replace />
           )
         }
       />
       <Route
         path="/doctor"
         element={
-          auth ? (
-            role === 'doctor' ? (
-              <DoctorMedicalPage />
-            ) : (
-              <Navigate to={defaultRoute} replace />
-            )
+          role === 'doctor' ? (
+            <DoctorMedicalPage />
           ) : (
-            <Navigate to="/login" replace />
+            <Navigate to={defaultRoute} replace />
           )
         }
       />
-      <Route path="/qr" element={requireAuth(<Qr />)} />
-      <Route path="*" element={<Navigate to="/canteen" replace />} />
+      <Route
+        path="/hostal"
+        element={
+          role === 'hostal' ? <Hostal /> : <Navigate to={defaultRoute} replace />
+        }
+      />
+      <Route
+        path="/canteen-admin"
+        element={
+          role === 'canteen' ? (
+            <AdminCanteen />
+          ) : (
+            <Navigate to={defaultRoute} replace />
+          )
+        }
+      />
+      <Route
+        path="/medical-admin"
+        element={
+          role === 'medical-admin' ? (
+            <AdminMedical />
+          ) : (
+            <Navigate to={defaultRoute} replace />
+          )
+        }
+      />
+      <Route path="/qr" element={<Qr />} />
+      <Route path="*" element={<Navigate to={defaultRoute} replace />} />
     </Routes>
   );
 }

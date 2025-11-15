@@ -1,54 +1,70 @@
-# Uniflow
+# Getting Started with Create React App
 
-Unified campus tooling powered by Create React App. This build now includes the full canteen experience for both students and the single canteen admin.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Getting Started
+## Available Scripts
 
-```bash
-npm install
-npm start
-```
+In the project directory, you can run:
 
-The React dev server runs at http://localhost:3000. The API (Express + MongoDB) runs separately from `/server` on port 5000 by default.
+### `npm start`
 
-Set the API base URL (optional) in `.env`:
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-```
-REACT_APP_API_BASE_URL=http://localhost:5000
-```
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-### Other Scripts
+### `npm test`
 
-- `npm test` – run the CRA test watcher.
-- `npm run build` – create a production bundle inside `build/`.
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-## Canteen Module
+### `npm run build`
 
-Routes:
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-- `/canteen` – Student view. Shows only items where `available` and `isToday` are true.
-- `/canteen-admin` – Admin inventory & menu builder protected by demo credentials. Data persists in MongoDB via the Node server (`server/server.js`).
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-Admin credentials:
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-- **Email:** `dasininima@gmail.com`
-- **Password:** `dasini`
+### `npm run eject`
 
-Logging in stores an admin session in `localStorage`. Use the top-right logout button (or the page-level button) to clear that session and return to the main login screen.
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-Key features:
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-- 20 seeded Sri Lankan dishes with local thumbnails under `src/assets/food/`.
-- Two-pane admin dashboard backed by the API with search, category filter, summary counters, inline editing, add-item modal, delete confirmation, and today’s checklist.
-- Student grid with responsive cards, emoji badges, and friendly empty state – automatically reflects the admin’s “Today’s Menu”.
-- Toast notifications for CRUD actions and today’s menu toggles.
-- `src/store/canteenStore.ts` fetches & mutates data through the API (`/api/canteen`).
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-## Tech Stack Highlights
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-- React 19 with React Router 7.
-- Node/Express + MongoDB (Mongoose) API for canteen items and hostel notices.
-- Lucide icons, custom CSS, and image fallbacks for consistent visuals.
-- Toast context/provider to surface action feedback globally.
+## Learn More
 
-Feel free to adapt the data layer to a real API by swapping the logic inside `src/store/canteenStore.ts`.
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

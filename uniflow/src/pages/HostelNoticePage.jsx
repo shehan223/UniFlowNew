@@ -1,8 +1,25 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import NaviBar from "../components/NaviBar";
 import NoticeCard from "../components/NoticeCard";
 import "./hostelNoticePage.css";
 import { useNavigate } from "react-router-dom";
+
+const seedNotices = [
+  {
+    id: "seed-1",
+    title: "Water Supply Maintenance",
+    content:
+      "Water will be off tomorrow from 9 AM to 2 PM. Please store sufficient water in advance and avoid unnecessary usage during the maintenance window.",
+    createdAt: "2024-08-20T07:30:00.000Z",
+  },
+  {
+    id: "seed-2",
+    title: "Mess Timing Update",
+    content:
+      "New mess timings effective immediately: Breakfast 7-9 AM, Lunch 12-2 PM, Dinner 7-9 PM. Kindly be on time to avoid inconvenience.",
+    createdAt: "2024-08-19T10:00:00.000Z",
+  },
+];
 
 const formatDateTime = (value) => {
   const date = typeof value === "string" ? new Date(value) : value;
@@ -20,25 +37,37 @@ const formatDateTime = (value) => {
   });
 };
 
-const normalizeNotice = (notice = {}) => ({
-  id: notice.id || notice._id,
-  title: notice.title,
-  content: notice.content,
-  createdAt: notice.createdAt,
+const createNotice = (title, content) => ({
+  id: `notice-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+  title: title.trim(),
+  content: content.trim(),
+  createdAt: new Date().toISOString(),
 });
 
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const STORAGE_KEY = "warden-notices";
+const STORAGE_EVENT = "warden-notices-update";
 
 const HostelNoticePage = () => {
   const navigate = useNavigate();
-  const [notices, setNotices] = useState([]);
+  const [notices, setNotices] = useState(() => {
+    const cached = localStorage.getItem(STORAGE_KEY);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length) {
+          return parsed;
+        }
+        return parsed ?? seedNotices;
+      } catch (error) {
+        return seedNotices;
+      }
+    }
+    return seedNotices;
+  });
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedNotice, setSelectedNotice] = useState(null);
   const [formValues, setFormValues] = useState({ title: "", content: "" });
   const [authorized, setAuthorized] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     const email = localStorage.getItem("email");
@@ -55,29 +84,10 @@ const HostelNoticePage = () => {
     }
   }, [navigate]);
 
-  const fetchNotices = useCallback(async () => {
-    if (!authorized) {
-      return;
-    }
-    setLoading(true);
-    setError("");
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/notices`);
-      if (!response.ok) {
-        throw new Error("Failed to load notices");
-      }
-      const data = await response.json();
-      setNotices(data.map(normalizeNotice));
-    } catch (err) {
-      setError(err.message || "Unable to load notices");
-    } finally {
-      setLoading(false);
-    }
-  }, [authorized]);
-
   useEffect(() => {
-    fetchNotices();
-  }, [fetchNotices]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notices));
+    window.dispatchEvent(new CustomEvent(STORAGE_EVENT, { detail: notices }));
+  }, [notices]);
 
   const sortedNotices = useMemo(
     () =>
@@ -102,7 +112,7 @@ const HostelNoticePage = () => {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCreateNotice = async (event) => {
+  const handleCreateNotice = (event) => {
     event.preventDefault();
     const { title, content } = formValues;
 
@@ -110,37 +120,14 @@ const HostelNoticePage = () => {
       return;
     }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/notices`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content }),
-      });
-      if (!response.ok) {
-        throw new Error("Unable to save notice");
-      }
-      const created = await response.json();
-      setNotices((prev) => [normalizeNotice(created), ...prev]);
-      setShowAddForm(false);
-    } catch (err) {
-      setError(err.message || "Unable to save notice");
-    }
+    setNotices((prev) => [createNotice(title, content), ...prev]);
+    setShowAddForm(false);
   };
 
-  const handleDeleteNotice = async (id) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/notices/${id}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        throw new Error("Unable to delete notice");
-      }
-      setNotices((prev) => prev.filter((notice) => notice.id !== id));
-      if (selectedNotice?.id === id) {
-        setSelectedNotice(null);
-      }
-    } catch (err) {
-      setError(err.message || "Unable to delete notice");
+  const handleDeleteNotice = (id) => {
+    setNotices((prev) => prev.filter((notice) => notice.id !== id));
+    if (selectedNotice?.id === id) {
+      setSelectedNotice(null);
     }
   };
 
@@ -169,24 +156,7 @@ const HostelNoticePage = () => {
           </header>
 
           <section className="notice-page__list">
-            {loading ? (
-              <div className="notice-page__empty">
-                <h2>Loading notices...</h2>
-                <p>Please wait while we fetch the latest updates.</p>
-              </div>
-            ) : error ? (
-              <div className="notice-page__empty">
-                <h2>Unable to load notices</h2>
-                <p>{error}</p>
-                <button
-                  type="button"
-                  className="notice-form__btn notice-form__btn--save"
-                  onClick={fetchNotices}
-                >
-                  Retry
-                </button>
-              </div>
-            ) : sortedNotices.length === 0 ? (
+            {sortedNotices.length === 0 ? (
               <div className="notice-page__empty">
                 <h2>No notices yet</h2>
                 <p>

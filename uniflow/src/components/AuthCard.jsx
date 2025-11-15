@@ -8,13 +8,18 @@ import {
 } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
 import UniflowLogo from "../assets/uniflow-logo.png";
-import { loginCanteenAdmin } from "../canteenAuth";
 import "./auth.css";
 
 const WARDEN_EMAIL = "skavinda742@gmail.com";
 const WARDEN_PASSWORD = "shehan";
 const DOCTOR_EMAIL = "skavinda771@gmail.com";
 const DOCTOR_PASSWORD = "kavinda";
+const HOSTAL_EMAIL = "hostal@gmail.com";
+const HOSTAL_PASSWORD = "hostal";
+const CANTEEN_EMAIL = "canteen@gmail.com";
+const CANTEEN_PASSWORD = "canteen";
+const MEDICAL_EMAIL = "medical@gmail.com";
+const MEDICAL_PASSWORD = "medical";
 
 const formCopy = {
   login: {
@@ -76,34 +81,31 @@ function AuthCard({ onAuthSuccess }) {
     setFeedback("");
 
     const { email, password } = loginValues;
-    const normalizedEmail = email.trim().toLowerCase();
-    const isWarden = normalizedEmail === WARDEN_EMAIL && password === WARDEN_PASSWORD;
-    const isDoctor = normalizedEmail === DOCTOR_EMAIL && password === DOCTOR_PASSWORD;
-
-    const canteenAdminUser = loginCanteenAdmin(normalizedEmail, password);
-    if (canteenAdminUser) {
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("email", normalizedEmail);
-      localStorage.setItem("role", "canteenAdmin");
-      localStorage.setItem("userRole", "canteenAdmin");
-      localStorage.setItem("userFullName", canteenAdminUser.displayName);
-      localStorage.setItem("userPassword", password);
-      setFeedback("Login successful!");
-      onAuthSuccess?.("canteenAdmin");
-      navigate("/canteen-admin", { replace: true });
-      setSubmitting(false);
-      return;
-    }
+    const isWarden = email === WARDEN_EMAIL && password === WARDEN_PASSWORD;
+    const isDoctor = email === DOCTOR_EMAIL && password === DOCTOR_PASSWORD;
+    const isHostal = email === HOSTAL_EMAIL && password === HOSTAL_PASSWORD;
+    const isCanteen = email === CANTEEN_EMAIL && password === CANTEEN_PASSWORD;
+    const isMedical = email === MEDICAL_EMAIL && password === MEDICAL_PASSWORD;
 
     try {
       let fullName = "";
-      if (!isWarden && !isDoctor) {
-        const userCredential = await signInWithEmailAndPassword(auth, normalizedEmail, password);
+      if (!isWarden && !isDoctor && !isHostal && !isCanteen && !isMedical) {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
         fullName = userCredential.user?.displayName?.trim() || "";
       }
-      const role = isWarden ? "warden" : isDoctor ? "doctor" : "student";
+      const role = isWarden
+        ? "warden"
+        : isDoctor
+        ? "doctor"
+        : isHostal
+        ? "hostal"
+        : isCanteen
+        ? "canteen"
+        : isMedical
+        ? "medical-admin"
+        : "student";
       localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("email", normalizedEmail);
+      localStorage.setItem("email", email);
       localStorage.setItem("role", role);
       localStorage.setItem("userRole", role);
       localStorage.setItem("userPassword", password);
@@ -113,10 +115,20 @@ function AuthCard({ onAuthSuccess }) {
       setFeedback("Login successful!");
       onAuthSuccess?.(role);
 
-      navigate(
-        role === "warden" ? "/warden" : role === "doctor" ? "/doctor" : "/dashboard",
-        { replace: true },
-      );
+      let destination = "/dashboard";
+      if (role === "warden") {
+        destination = "/warden";
+      } else if (role === "doctor") {
+        destination = "/doctor";
+      } else if (role === "hostal") {
+        destination = "/hostal";
+      } else if (role === "canteen") {
+        destination = "/canteen-admin";
+      } else if (role === "medical-admin") {
+        destination = "/medical-admin";
+      }
+
+      navigate(destination, { replace: true });
     } catch (error) {
       localStorage.clear();
       setFeedback("Invalid email or password. Please try again.");

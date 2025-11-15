@@ -5,12 +5,6 @@ import "./navibar.css";
 import { getDisplayName } from "../utils/getDisplayName";
 import ProfileChip from "./ProfileChip";
 import ProfileOverlay from "./ProfileOverlay";
-import {
-  getCanteenAuthUser,
-  isCanteenAdmin,
-  logoutCanteenAdmin,
-} from "../canteenAuth";
-import clearUserSession from "../utils/clearUserSession";
 
 const readProfilePhoto = () => {
   try {
@@ -20,24 +14,15 @@ const readProfilePhoto = () => {
   }
 };
 
-const deriveDisplayName = () => {
-  const adminUser = getCanteenAuthUser();
-  if (adminUser?.displayName) {
-    return adminUser.displayName;
-  }
-  return getDisplayName();
-};
-
 const NaviBar = () => {
-  const [displayName, setDisplayName] = useState(() => deriveDisplayName());
+  const [displayName, setDisplayName] = useState(() => getDisplayName());
   const [profilePhoto, setProfilePhoto] = useState(() => readProfilePhoto());
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  const [overlayTab, setOverlayTab] = useState("profile");
   const navigate = useNavigate();
 
   useEffect(() => {
     const hydrate = () => {
-      setDisplayName(deriveDisplayName());
+      setDisplayName(getDisplayName());
       setProfilePhoto(readProfilePhoto());
     };
 
@@ -50,24 +35,52 @@ const NaviBar = () => {
   }, []);
 
   const handleLogout = () => {
-    logoutCanteenAdmin();
-    clearUserSession();
-    window.dispatchEvent(new Event("storage"));
+    const keysToClear = [
+      "isAuthenticated",
+      "email",
+      "role",
+      "userRole",
+      "userFullName",
+      "userProfilePhoto",
+      "userPhone",
+      "userAddress",
+      "userYear",
+      "userID",
+      "userPassword",
+      "userDepartment",
+      "userRoleDescription",
+      "wardenEmployeeId",
+      "wardDept",
+      "wardExt",
+      "wardPhone",
+      "wardAdminId",
+      "wardEmail",
+      "docRegNo",
+      "docSpec",
+      "docHours",
+      "docPhone",
+      "docAdminId",
+      "docEmail",
+    ];
+
+    keysToClear.forEach((key) => {
+      try {
+        localStorage.removeItem(key);
+      } catch (error) {
+        // ignore
+      }
+    });
+
     navigate("/login", { replace: true });
   };
 
   const handleProfileUpdated = (payload = {}) => {
     if (payload.fullName) {
-      setDisplayName(deriveDisplayName());
+      setDisplayName(getDisplayName());
     }
     if (Object.prototype.hasOwnProperty.call(payload, "profilePhoto")) {
       setProfilePhoto(payload.profilePhoto || readProfilePhoto());
     }
-  };
-
-  const openOverlay = (tab = "profile") => {
-    setOverlayTab(tab);
-    setIsOverlayOpen(true);
   };
 
   return (
@@ -83,14 +96,11 @@ const NaviBar = () => {
 
         <div className="navbar-right">
           <FaBell className="icon" />
-          <div className="navbar-profile">
-            <ProfileChip
-              displayName={displayName}
-              profilePhoto={profilePhoto}
-              onClick={() => openOverlay("profile")}
-              ariaLabel="Open profile settings"
-            />
-          </div>
+          <ProfileChip
+            displayName={displayName}
+            profilePhoto={profilePhoto}
+            onClick={() => setIsOverlayOpen(true)}
+          />
           <button className="logout-btn" onClick={handleLogout}>
             Log Out
           </button>
@@ -98,7 +108,6 @@ const NaviBar = () => {
       </nav>
       {isOverlayOpen && (
         <ProfileOverlay
-          initialTab={overlayTab}
           onClose={() => setIsOverlayOpen(false)}
           onProfileUpdated={handleProfileUpdated}
         />
