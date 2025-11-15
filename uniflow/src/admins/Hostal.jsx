@@ -20,12 +20,12 @@ function Hostal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newNotice, setNewNotice] = useState({
     title: '',
-    desc: '',
+    description: '',
     date: new Date().toISOString().slice(0, 10),
   });
   const [submitting, setSubmitting] = useState(false);
 
-  const noticesCollection = collection(db, 'uniflow_hostal');
+  const noticesCollection = collection(db, 'hostelNotices');
 
   const loadNotices = useCallback(async () => {
     setLoading(true);
@@ -37,7 +37,7 @@ function Hostal() {
         return {
           id: docSnapshot.id,
           title: data.title,
-          desc: data.desc ?? data.description ?? '',
+          description: data.description ?? data.desc ?? '',
           date: data.date,
         };
       });
@@ -58,7 +58,7 @@ function Hostal() {
   const resetModal = () => {
     setNewNotice({
       title: '',
-      desc: '',
+      description: '',
       date: new Date().toISOString().slice(0, 10),
     });
   };
@@ -80,7 +80,7 @@ function Hostal() {
   const handleModalSubmit = async (event) => {
     event.preventDefault();
     const title = newNotice.title.trim();
-    const desc = newNotice.desc.trim();
+    const description = newNotice.description.trim();
 
     if (!title) {
       return;
@@ -90,7 +90,7 @@ function Hostal() {
     try {
       await addDoc(noticesCollection, {
         title,
-        desc: desc || 'No additional details provided.',
+        description: description || 'No additional details provided.',
         date: newNotice.date || new Date().toISOString().slice(0, 10),
         createdAt: serverTimestamp(),
       });
@@ -107,7 +107,7 @@ function Hostal() {
 
   const handleDelete = async (id) => {
     try {
-      await deleteDoc(doc(db, 'uniflow_hostal', id));
+      await deleteDoc(doc(noticesCollection, id));
       loadNotices();
     } catch (err) {
       console.error('Failed to delete notice', err);
@@ -115,11 +115,19 @@ function Hostal() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = '/login';
+  };
+
   return (
     <div className="hostal-page">
       <div className="hostal-shell">
         <section className="hostal-banner">
           <h1>Hostel Management System</h1>
+          <button type="button" className="hostal-logout" onClick={handleLogout}>
+            Logout
+          </button>
         </section>
 
         <section className="hostal-notice-section">
@@ -139,7 +147,7 @@ function Hostal() {
                 <li key={notice.id} className="hostal-notice-card">
                   <div className="hostal-notice-body">
                     <h3>{notice.title}</h3>
-                    <p>{notice.desc}</p>
+                    <p>{notice.description}</p>
                     <span className="hostal-notice-date">{notice.date}</span>
                   </div>
                   <button
@@ -189,8 +197,8 @@ function Hostal() {
               <label className="hostal-modal__field">
                 <span>Description</span>
                 <textarea
-                  name="desc"
-                  value={newNotice.desc}
+                  name="description"
+                  value={newNotice.description}
                   onChange={handleModalChange}
                   placeholder="Provide the notice details..."
                   rows={4}

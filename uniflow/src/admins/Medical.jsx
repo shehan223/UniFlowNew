@@ -47,12 +47,20 @@ function Medical() {
     ]);
     setShowForm(false);
   };
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = '/login';
+  };
+
   return (
     <div className="medical-admin">
       <div className="medical-shell">
         <section className="medical-banner">
           <h1>Medical Center Management System</h1>
           <p>Doctor Availability Management</p>
+          <button type="button" className="medical-logout" onClick={handleLogout}>
+            Logout
+          </button>
         </section>
         <section className="medical-availability">
           <span>Medical Availability</span>

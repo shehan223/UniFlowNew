@@ -81,6 +81,11 @@ function Canteen() {
     setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = '/login';
+  };
+
   const handleOpenModal = () => {
     setNewItem({
       name: '',
@@ -128,6 +133,9 @@ function Canteen() {
         <header className="canteen-hero">
           <h1>Canteen Management System</h1>
           <p>Manage your food menu, prices, and inventory</p>
+          <button type="button" className="admin-logout" onClick={handleLogout}>
+            Logout
+          </button>
         </header>
 
         <div className="canteen-toolbar">

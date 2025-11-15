@@ -43,6 +43,28 @@
   border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
+.admin-logout {
+  border: none;
+  border-radius: 15px;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
+  position: absolute;
+  right: 20px;
+  top: 40px;
+}
+
+.admin-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(68, 185, 239, 0.35);
+}
+
 .canteen-search input,
 .canteen-filter,
 .canteen-add-btn {
