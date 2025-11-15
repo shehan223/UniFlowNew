@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
 import UniflowLogo from "../assets/uniflow-logo.png";
+import { loginCanteenAdmin } from "../canteenAuth";
 import "./auth.css";
 
 const WARDEN_EMAIL = "skavinda742@gmail.com";
@@ -75,18 +76,34 @@ function AuthCard({ onAuthSuccess }) {
     setFeedback("");
 
     const { email, password } = loginValues;
-    const isWarden = email === WARDEN_EMAIL && password === WARDEN_PASSWORD;
-    const isDoctor = email === DOCTOR_EMAIL && password === DOCTOR_PASSWORD;
+    const normalizedEmail = email.trim().toLowerCase();
+    const isWarden = normalizedEmail === WARDEN_EMAIL && password === WARDEN_PASSWORD;
+    const isDoctor = normalizedEmail === DOCTOR_EMAIL && password === DOCTOR_PASSWORD;
+
+    const canteenAdminUser = loginCanteenAdmin(normalizedEmail, password);
+    if (canteenAdminUser) {
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("email", normalizedEmail);
+      localStorage.setItem("role", "canteenAdmin");
+      localStorage.setItem("userRole", "canteenAdmin");
+      localStorage.setItem("userFullName", canteenAdminUser.displayName);
+      localStorage.setItem("userPassword", password);
+      setFeedback("Login successful!");
+      onAuthSuccess?.("canteenAdmin");
+      navigate("/canteen-admin", { replace: true });
+      setSubmitting(false);
+      return;
+    }
 
     try {
       let fullName = "";
       if (!isWarden && !isDoctor) {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, normalizedEmail, password);
         fullName = userCredential.user?.displayName?.trim() || "";
       }
       const role = isWarden ? "warden" : isDoctor ? "doctor" : "student";
       localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("email", email);
+      localStorage.setItem("email", normalizedEmail);
       localStorage.setItem("role", role);
       localStorage.setItem("userRole", role);
       localStorage.setItem("userPassword", password);

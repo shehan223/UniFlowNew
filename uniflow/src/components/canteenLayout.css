@@ -1,0 +1,29 @@
+.canteen-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 60%);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 48px;
+}
+
+.canteen-shell {
+  display: flex;
+  gap: 28px;
+  padding: 0 32px;
+}
+
+.canteen-content {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 32px;
+  padding: 28px;
+  box-shadow: 0 35px 60px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+@media (max-width: 1024px) {
+  .canteen-shell {
+    flex-direction: column;
+  }
+}

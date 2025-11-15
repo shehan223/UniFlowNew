@@ -12,7 +12,13 @@ function readProfilePhoto() {
   }
 }
 
-const ProfileChip = ({ displayName: displayNameProp, profilePhoto: profilePhotoProp, onClick }) => {
+const ProfileChip = ({
+  displayName: displayNameProp,
+  profilePhoto: profilePhotoProp,
+  onClick,
+  ariaLabel = "Open profile settings",
+  ...buttonProps
+}) => {
   const [displayName, setDisplayName] = useState(displayNameProp || getDisplayName());
   const [profilePhoto, setProfilePhoto] = useState(profilePhotoProp || readProfilePhoto());
 
@@ -46,7 +52,13 @@ const ProfileChip = ({ displayName: displayNameProp, profilePhoto: profilePhotoP
     typeof profilePhoto === "string" && profilePhoto.trim().length > 0 ? profilePhoto : unknownAvatar;
 
   return (
-    <button type="button" className="profile-chip" onClick={onClick} aria-label="Open profile settings">
+    <button
+      type="button"
+      className="profile-chip"
+      onClick={onClick}
+      aria-label={ariaLabel}
+      {...buttonProps}
+    >
       <img src={effectivePhoto} alt="Profile" />
       <span>{displayName}</span>
     </button>
@@ -57,12 +69,14 @@ ProfileChip.propTypes = {
   displayName: PropTypes.string,
   profilePhoto: PropTypes.string,
   onClick: PropTypes.func,
+  ariaLabel: PropTypes.string,
 };
 
 ProfileChip.defaultProps = {
   displayName: undefined,
   profilePhoto: undefined,
   onClick: undefined,
+  ariaLabel: "Open profile settings",
 };
 
 export default ProfileChip;

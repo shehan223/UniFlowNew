@@ -52,8 +52,9 @@ function readProfilePhoto() {
   }
 }
 
-const ProfileOverlay = ({ onClose, onProfileUpdated }) => {
-  const [activeTab, setActiveTab] = useState("profile");
+const ProfileOverlay = ({ onClose, onProfileUpdated, initialTab = "profile" }) => {
+  const tabFromProp = initialTab === "privacy" ? "privacy" : "profile";
+  const [activeTab, setActiveTab] = useState(tabFromProp);
   const [role, setRole] = useState("student");
   const [profileValues, setProfileValues] = useState(DEFAULT_STATE);
   const [profilePhoto, setProfilePhoto] = useState("");
@@ -88,6 +89,10 @@ const ProfileOverlay = ({ onClose, onProfileUpdated }) => {
     setFeedback({ type: "", text: "" });
     setFieldErrors({});
   }, []);
+
+  useEffect(() => {
+    setActiveTab(initialTab === "privacy" ? "privacy" : "profile");
+  }, [initialTab]);
 
   useEffect(() => {
     if (activeTab !== "profile") {
@@ -511,10 +516,12 @@ const ProfileOverlay = ({ onClose, onProfileUpdated }) => {
 ProfileOverlay.propTypes = {
   onClose: PropTypes.func.isRequired,
   onProfileUpdated: PropTypes.func,
+  initialTab: PropTypes.oneOf(["profile", "privacy"]),
 };
 
 ProfileOverlay.defaultProps = {
   onProfileUpdated: undefined,
+  initialTab: "profile",
 };
 
 export default ProfileOverlay;
